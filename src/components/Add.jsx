@@ -2,7 +2,9 @@ import { Avatar, Box, Button, ButtonGroup, Fab, Modal, Stack, styled, TextField,
 import React, { useContext, useState } from 'react';
 import {Add as AddIcon, DateRange, EmojiEmotions, Image, PersonAdd, VideoCameraBack} from '@mui/icons-material';
 import { AuthContext } from '../context/AuthContext';
-
+import { arrayUnion, doc, Timestamp, updateDoc } from 'firebase/firestore';
+import { db } from '../firebase';
+import { v4 as uuid} from "uuid";
 
 const StyledModal = styled(Modal)({
     display: "flex",
@@ -22,6 +24,23 @@ const Add = () => {
   const [open, setOpen] = useState(false);
 
   const {currentUser} = useContext(AuthContext);
+
+  const [text, setText] = useState('');
+  const [img, setImg] = useState(null);
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+
+    await updateDoc(doc(db,"posts",currentUser.uid),{
+        posts: arrayUnion({
+            id: uuid(),
+            text,
+            date: Timestamp.now()
+            // img
+        })
+    });
+    setOpen(false);
+  }
 
   return (
     <>
@@ -53,6 +72,7 @@ const Add = () => {
                     rows={1}
                     placeholder="What's on your mind?"
                     variant='standard'
+                    onChange={e=>setText(e.target.value)}
                 />
                 <Stack direction="row" gap={1} mt={2} mb={3}>
                     <EmojiEmotions color='primary'/>
@@ -61,7 +81,7 @@ const Add = () => {
                     <PersonAdd color='error'/>
                 </Stack>
                 <ButtonGroup fullWidth variant="contained" aria-label="outlined primary button group">
-                    <Button>Post</Button>
+                    <Button onClick={handleSignup}>Post</Button>
                     <Button sx={{width: "100px"}}><DateRange/></Button>
                 </ButtonGroup>
             </Box>
