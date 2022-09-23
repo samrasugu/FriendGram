@@ -1,6 +1,7 @@
 import { Avatar, Box, Button, ButtonGroup, Fab, Modal, Stack, styled, TextField, Tooltip, Typography } from '@mui/material'
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {Add as AddIcon, DateRange, EmojiEmotions, Image, PersonAdd, VideoCameraBack} from '@mui/icons-material';
+import { AuthContext } from '../context/AuthContext';
 
 
 const StyledModal = styled(Modal)({
@@ -20,6 +21,8 @@ const UserBox = styled(Box)({
 const Add = () => {
   const [open, setOpen] = useState(false);
 
+  const {currentUser} = useContext(AuthContext);
+
   return (
     <>
         <Tooltip onClick={e=>setOpen(true)} title="Add" sx={{position: "fixed", bottom: 20, left: {xs:"calc(50% - 25px)", md: 30}}}>
@@ -38,9 +41,9 @@ const Add = () => {
                 Create a post
                 </Typography>
                 <UserBox>
-                    <Avatar alt="Remy Sharp" src="https://images.pexels.com/photos/846741/pexels-photo-846741.jpeg?auto=compress&cs=tinysrgb&w=600" />
+                    <Avatar alt="Remy Sharp" src={currentUser.photoURL} />
                     <Typography fontWeight={500} variant="span">
-                        Sam Rasugu
+                        {currentUser.displayName}
                     </Typography>
                 </UserBox>
                 <TextField

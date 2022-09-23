@@ -34,9 +34,9 @@ const Signup = () => {
                 email,
             });
   
-            //   await setDoc(doc(db,"userChats",res.user.uid),{});
+            await setDoc(doc(db,"posts",res.user.uid),{});
   
-              navigate("/");
+            navigate("/");
         } catch (error) {
             
         }

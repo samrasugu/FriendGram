@@ -1,7 +1,10 @@
 import { Mail, Notifications, Pets } from '@mui/icons-material'
 import { AppBar, Avatar, Badge, Box, InputBase, Menu, MenuItem, styled, Toolbar, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import MailIcon from '@mui/icons-material/Mail';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
+import { AuthContext } from '../context/AuthContext';
 
 const StyledToolbar = styled(Toolbar)({
     display:"flex",
@@ -37,6 +40,8 @@ const Navbar = () => {
 
     const [open, setOpen] = useState(false);
 
+    const {currentUser} = useContext(AuthContext);
+
   return (
     <AppBar position="sticky">
       <StyledToolbar>
@@ -50,12 +55,12 @@ const Navbar = () => {
           <Badge badgeContent={4} color="error">
             <Notifications/>
           </Badge>
-          <Avatar sx={{width: 30, height: 30}} src='https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=600'
+          <Avatar sx={{width: 30, height: 30}} src={currentUser.photoURL}
           onClick={e=>setOpen(true)}
           />
         </Icons>
         <UserBox onClick={e=>setOpen(true)}>
-          <Avatar sx={{width: 30, height: 30}} src='https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=600'/>
+          <Avatar sx={{width: 30, height: 30}} src={currentUser.photoURL}/>
           <Typography variant='span'>SAM</Typography>
         </UserBox>
       </StyledToolbar>
@@ -73,10 +78,14 @@ const Navbar = () => {
           vertical: 'top',
           horizontal: 'right',
         }}
+        sx={{
+          top: "55px",
+          right: "100px"
+        }}
       >
         <MenuItem>Profile</MenuItem>
         <MenuItem>My account</MenuItem>
-        <MenuItem>Logout</MenuItem>
+        <MenuItem onClick={()=>signOut(auth)}>Logout</MenuItem>
       </Menu>
     </AppBar>
   )
